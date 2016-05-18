@@ -82,6 +82,17 @@ describe('Satori', function () {
 			assert.equal(root.innerHTML, '<h1 style="color: blue;">First</h1>');
 		});
 
+		it('should bind event handler', function () {
+			let clicked = false;
+			let header = view.h1({on: {click: () => {clicked = true}}}, () => model.title);
+			root.appendChild(header);
+			header.click();
+			assert.equal(root.innerHTML, '<h1>First</h1>');
+			assert.equal(clicked, true);
+		});
+	});
+
+	describe('update', function () {
 		it('should update element text on property change', function () {
 			let header1 = view.h1(() => model.title);
 			let header2 = view.h1(() => model.title);
@@ -109,15 +120,6 @@ describe('Satori', function () {
 			}), [container]);
 
 			assert.equal(root.innerHTML, '<div class="post published"><h1>First</h1></div>');
-		});
-
-		it('should bind event handler', function () {
-			let clicked = false;
-			let header = view.h1({on: {click: () => {clicked = true}}}, () => model.title);
-			root.appendChild(header);
-			header.click();
-			assert.equal(root.innerHTML, '<h1>First</h1>');
-			assert.equal(clicked, true);
 		});
 	});
 
