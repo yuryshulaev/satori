@@ -6,13 +6,13 @@ Key features:
 
  * Unobtrusive — you can keep your model intact. In contrast to non-Proxy solutions, even property additions do not need any special treatment
  * Pure JavaScript [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) makes code reuse more straightforward
- * Expressive — [TodoMVC is only 75 SLOC](#Examples) (including most of the markup)
+ * Expressive — [TodoMVC is only 75 SLOC](#examples) (including most of the markup)
  * It doesn’t dictate you anything — it’s not a framework
  * Tiny — core library is ~700 SLOC, 5 KB gzipped
  * Server-side rendering
  * No dependencies
  * Undo/redo
- * [Fast](#Performance)
+ * [Fast](#performance)
 
 These qualities also make it useful for quick prototyping — it won’t interfere with your model code, requires almost zero boilerplate and helps you create and reorganize ad hoc components very quickly.
 
