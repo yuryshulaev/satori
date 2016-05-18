@@ -224,7 +224,7 @@ input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}}})
 This is more convenient than `switch`, because it can fit in one line and supports inheritance — you can use something like this to create modifications of some base handler set:
 
 ```javascript
-Object.assign({}, base, {[view.Key.*]: handler, [view.Key.*]: null /* exclude */})
+Object.assign({}, base, {[view.Key.ENTER]: handler, [view.Key.ESCAPE]: null /* exclude */})
 ```
 
 #### Two-way data binding: `bind`
