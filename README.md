@@ -211,20 +211,15 @@ Simply calls `addEventHandler()` for each key.
 view.div({on: {click() {alert('Click!')}}})
 ```
 
-#### Keydown event handler: `keydown`
+#### Keyboard event handler: `keydown`, `keyup`
 
 ```javascript
-{keydown: {[view.Key.*]: (event) => …, …}}
+{keydown: {[view.Key.*]: (element, event) => …, …}}
+{keyup: {[view.Key.*]: (element, event) => …, …}}
 ```
 
 ```javascript
 input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}}})
-```
-
-This is more convenient than `switch`, because it can fit in one line and supports inheritance — you can use something like this to create modifications of some base handler set:
-
-```javascript
-Object.assign({}, base, {[view.Key.ENTER]: handler, [view.Key.ESCAPE]: null /* exclude */})
 ```
 
 #### Two-way data binding: `bind`
