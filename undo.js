@@ -8,7 +8,12 @@ class SatoriUndo {
 		this.applyState = applyState;
 		this.disableRedo = disableRedo;
 		this.reset();
-		satori.onEvent.add(event => this.onEvent(event));
+		this.eventHandler = event => this.onEvent(event);
+		satori.onEvent.add(this.eventHandler);
+	}
+
+	unbind() {
+		this.satori.onEvent.delete(this.eventHandler);
 	}
 
 	reset() {
