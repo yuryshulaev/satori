@@ -48,6 +48,8 @@ view.qs('body').appendChild(HelloComponent(user));
 setTimeout(() => {user.name = 'Joe'}, 1000);
 ```
 
+Reactivity is based primarily on registering property accesses via proxies, so the properties you want observed have to be accessed inside the wrapper function. This means you can’t just write `() => name` — that would be static. Also, you can’t make reactive text nodes — you must have an element. This is why we added a `<span>` here.
+
 ## Documentation
 
 ### Element content
