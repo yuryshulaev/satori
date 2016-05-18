@@ -1,6 +1,6 @@
 {
   "name": "satorijs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Minimalistic JavaScript reactive view library (ES6 only)",
   "devDependencies": {
     "chai": "^3.5.0",
