@@ -219,7 +219,7 @@ view.div({on: {click() {alert('Click!')}}})
 ```
 
 ```javascript
-input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}}})
+input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}, [view.Key.ESCAPE]: () => {alert('Esc')}}})
 ```
 
 #### Two-way data binding: `bind`
