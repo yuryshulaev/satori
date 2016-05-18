@@ -1,0 +1,9 @@
+{
+  "name": "satori",
+  "version": "0.1.0",
+  "description": "Minimalistic JavaScript reactive view library (ES6 only)",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  }
+}
