@@ -728,7 +728,7 @@ class Satori {
 	}
 
 	randomColor() {
-		return 'rgb(' + new Array(3).fill().map(() => Math.round(127 + Math.random() * 127)).join(', ') + ')';
+		return 'rgb(' + new Array(3).fill().map(() => Math.round(127 + Math.random() * 128)).join(', ') + ')';
 	}
 }
 
