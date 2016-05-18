@@ -151,14 +151,14 @@ describe('Satori', function () {
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
-		it('should append element on array push, scalar', function () {
+		it('should append element on array push', function () {
 			let list = view.ul(() => model.tags.map(tag => view.li(tag)));
 			root.appendChild(list);
 			model.tags.push('New');
 			assert.equal(root.innerHTML, '<ul>' + model.tags.map(tag => '<li>' + tag + '</li>').join('') + '</ul>');
 		});
 
-		it('should append element on array unshift, scalar, indexed', function () {
+		it('should append element on array unshift', function () {
 			let list = view.ul(() => model.tags.map((tag, i) => view.li(i + ' ' + tag)));
 			root.appendChild(list);
 			model.tags.unshift('New');
