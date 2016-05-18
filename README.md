@@ -214,18 +214,17 @@ view.div({on: {click() {alert('Click!')}}})
 #### Keydown event handler: `keydown`
 
 ```javascript
-// Use view.Key instead of Key if you don’t pass window to new Satori()
-{keydown: {[Satori.Key.*]: (event) => …, …}}
+{keydown: {[view.Key.*]: (event) => …, …}}
 ```
 
 ```javascript
-input({keydown: {[Satori.Key.ENTER]: el => {alert(el.value)}}})
+input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}}})
 ```
 
 This is more convenient than `switch`, because it can fit in one line and supports inheritance — you can use something like this to create modifications of some base handler set:
 
 ```javascript
-Object.assign({}, base, {[Satori.Key.*]: handler, [Satori.Key.*]: null /* exclude */})
+Object.assign({}, base, {[view.Key.*]: handler, [view.Key.*]: null /* exclude */})
 ```
 
 #### Two-way data binding: `bind`
