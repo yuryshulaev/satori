@@ -233,7 +233,7 @@ The value of the `to` element property gets assigned to the `model[key]` on ever
 ```
 
 ```javascript
-view.div({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
+view.input({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
 ```
 
 ## Examples
