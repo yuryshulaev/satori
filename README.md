@@ -226,7 +226,7 @@ input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}, [view.Key.ESCAPE]: (
 
 #### Two-way data binding: `bind`
 
-The value of the `to` element property gets assigned to the `model[key]` on every event specified in `on`. The opposite happens on every change of `model[key]`. Parameter `to` defaults to `checked` for checkboxes or `'value'` for anything else, and `on` defaults to `['change']`.
+The value of the `to` element property gets assigned to the `model[key]` on every event specified in `on`. The opposite happens on every change of `model[key]`. Parameter `to` defaults to `'checked'` for checkboxes or `'value'` for anything else, and `on` defaults to `['change']`.
 
 ```javascript
 {bind: {model: proxy, key: string, to: string, on: string|[string]}}
