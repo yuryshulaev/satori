@@ -272,7 +272,7 @@ Highlight all affected DOM elements:
 view.highlightUpdates = true;
 ```
 
-To inspect registered object observers, just explore the `[Symbol(proxyInternals)].observers` property of the proxy object in the developer tools of your browser. Most interesting fields of transactions are `element` and `name`. When you hover the `element` value, the actual element will usually be highlighted if it is visible.
+To inspect registered object observers, just explore the `[Symbol(proxyInternals)].observers` property of the proxy object in the developer tools of your browser. Most interesting observer fields are `element` and `name`. When you hover the `element` value, the actual element will usually be highlighted if it is visible.
 
 ## License
 
