@@ -2,6 +2,7 @@
   "name": "satorijs",
   "version": "0.1.3",
   "description": "Minimalistic JavaScript reactive view library (ES6 only)",
+  "license": "Apache 2.0",
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.4.5"
