@@ -1,6 +1,6 @@
 {
   "name": "satorijs",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Minimalistic JavaScript reactive view library (ES6 only)",
   "license": "Apache 2.0",
   "homepage": "https://github.com/yuryshulaev/satori/",
