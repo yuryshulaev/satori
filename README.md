@@ -213,6 +213,14 @@ Simply calls `addEventHandler()` for each key.
 view.div({on: {click() {alert('Click!')}}})
 ```
 
+#### Capturing event handlers: `onCapture`
+
+For capturing handlers use `onCapture` modifier instead of `on`:
+
+```javascript
+{onCapture: {eventType(event) {…}, …}}
+```
+
 #### Keyboard event handler: `keydown`, `keyup`
 
 ```javascript

@@ -130,16 +130,20 @@ class Satori {
 		on.forEach(eventType => this.on(el, {[eventType]: handler ? event => handler(update, event) : update}));
 	}
 
-	on(element, eventHandlers) {
+	on(element, eventHandlers, useCapture) {
 		for (let eventType in eventHandlers) {
 			let handler = eventHandlers[eventType];
 
 			if (handler) {
-				element.addEventListener(eventType, handler);
+				element.addEventListener(eventType, handler, useCapture);
 			}
 		}
 
 		return element;
+	}
+
+	onCapture(element, eventHandlers) {
+		return this.on(element, eventHandlers, true);
 	}
 
 	keydown(element, keyHandlers) {
