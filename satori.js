@@ -681,7 +681,7 @@ class Satori {
 	inputKeyHandler(func, {noTrim, allowEmpty, reset}) {
 		return {
 			[this.constructor.Key.ENTER]: el => {
-				let value = noTrim ? el.value :  el.value.trim();
+				let value = noTrim ? el.value : el.value.trim();
 
 				if (!value && !allowEmpty) {
 					return false;
@@ -736,10 +736,11 @@ class Satori {
 	}
 }
 
-Satori.TAGS = ['div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'li', 'strong', 'em', 'a', 'p', 'br', 'section',
-	'header', 'footer', 'nav', 'article', 'img', 'table', 'tr', 'td', 'hr', 'form', 'fieldset', 'button', 'input',
-	'label', 'select', 'option', 'textarea', 'blockquote', 'thead', 'tbody', 'tfoot', 'pre', 'code', 'sub', 'sup',
-	'abbr', 'audio', 'video', 'canvas', 'dl', 'dd', 'dt', 'kbd',
+Satori.TAGS = [
+	'html', 'head', 'body', 'meta', 'title', 'link', 'script', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+	'ul', 'li', 'strong', 'em', 'a', 'p', 'br', 'section', 'header', 'footer', 'nav', 'article', 'img',
+	'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'hr', 'form', 'fieldset', 'button', 'input', 'label', 'select', 'option',
+	'textarea', 'blockquote', 'pre', 'code', 'sub', 'sup', 'abbr', 'audio', 'video', 'canvas', 'dl', 'dd', 'dt', 'kbd',
 ];
 
 Satori.Key = {
