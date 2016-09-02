@@ -632,6 +632,8 @@ class Satori {
 			element.appendChild(content);
 		} else if (content != null) {
 			element.textContent = content;
+		} else if (content == null) {
+			element.innerHTML = '';
 		}
 	}
 
