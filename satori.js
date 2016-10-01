@@ -14,8 +14,9 @@ class Satori {
 		this.logFlushes = false;
 		this.logEvents = false;
 		this.synchronous = false;
-		this.html = this.createTagFactories(this.constructor.TAGS);
-		Object.assign(this, this.html);
+		let tagFactories = this.createTagFactories(this.constructor.TAGS);
+		Object.assign(this, tagFactories);
+		this.html = tagFactories;
 		this.Key = this.constructor.Key;
 	}
 
@@ -362,24 +363,31 @@ class Satori {
 				}
 
 				that.registerDependency(observers);
-				let descriptor = Object.getOwnPropertyDescriptor(target, prop) ||
-				                 Object.getOwnPropertyDescriptor(Object.getPrototypeOf(target), prop);
+				let descriptor = getPropertyDescriptor(target, prop);
 				return that.proxy(descriptor && descriptor.get ? descriptor.get.call(proxy) : target[prop]);
 			},
 
 			set(target, prop, value, proxy) {
 				let raw = that.unproxy(value);
+				let descriptor = getPropertyDescriptor(target, prop);
+				let hasSetter = descriptor && descriptor.set;
 
-				if (raw === target[prop]) {
+				if (!hasSetter && raw === target[prop]) {
 					return true;
 				}
 
-				let existed = prop in target;
+				let existed = target.hasOwnProperty(prop);
 				let old = target[prop];
-				target[prop] = raw;
+
+				if (hasSetter) {
+					descriptor.set.call(proxy, raw);
+				} else {
+					target[prop] = raw;
+				}
+
 				that.event(this.propObservers.get(prop), {proxy, prop, value: raw, existed, old});
 
-				if (!existed) {
+				if (!existed && target.hasOwnProperty(prop)) {
 					that.event(this.keysObservers, {proxy, prop, value: raw}, true);
 				}
 
@@ -750,6 +758,11 @@ Satori.Key = {
 	HOME: 36, LEFT: 37, META: 91, MENU: 93, PAGE_DOWN: 34, PAGE_UP: 33, PERIOD: 190, RIGHT: 39, SHIFT: 16,
 	SPACE: 32, TAB: 9, UP: 38,
 };
+
+function getPropertyDescriptor(obj, prop) {
+	return Object.getOwnPropertyDescriptor(obj, prop) ||
+	       Object.getOwnPropertyDescriptor(Object.getPrototypeOf(obj), prop);
+}
 
 class SatoriObserver {
 	constructor(func, parent, name, element, keepChildren) {

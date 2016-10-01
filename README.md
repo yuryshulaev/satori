@@ -82,7 +82,7 @@ view.setElementContent(element, content)
 
 ### Modifiers
 
-Element modifiers are passed as a first argument to an element factory function:
+Element modifiers are passed as the first argument to an element factory function:
 
 ```javascript
 view.div({…}, content)
