@@ -1,6 +1,6 @@
 {
   "name": "satorijs",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Minimalistic JavaScript reactive view library (ES6 only)",
   "license": "Apache-2.0",
   "repository": {
