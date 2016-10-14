@@ -33,9 +33,9 @@ class SatoriComponent {
 		const classes = {[className]: true};
 
 		if (mods) {
-			Object.keys(mods).forEach(mod => {
+			for (let mod in mods) {
 				classes[className + '-' + mod] = mods[mod];
-			});
+			}
 		}
 
 		return classes;
@@ -44,7 +44,7 @@ class SatoriComponent {
 	defaults(defaults, options) {
 		const result = Object.assign({}, defaults, options);
 
-		for (const key in defaults) {
+		for (let key in defaults) {
 			if (!DEEP_KEYS.has(key)) {
 				continue;
 			}

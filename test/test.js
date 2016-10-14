@@ -10,7 +10,7 @@ describe('Satori', function () {
 	let root;
 
 	function trackUpdates(func, expected) {
-		let updates = [];
+		const updates = [];
 
 		function onElementUpdate(element) {
 			updates.push(element);
@@ -23,7 +23,7 @@ describe('Satori', function () {
 	}
 
 	beforeEach(function () {
-		let rawModel = {
+		const rawModel = {
 			id: 0,
 			title: 'First',
 			text: 'Text',
@@ -31,7 +31,7 @@ describe('Satori', function () {
 			isPublished: false,
 		};
 
-		let rawArray = [rawModel, {id: 1, title: 'Second', text: 'Content'}, {id: 2, title: 'Third', text: 'Content'}];
+		const rawArray = [rawModel, {id: 1, title: 'Second', text: 'Content'}, {id: 2, title: 'Third', text: 'Content'}];
 		view = new Satori(window);
 		view.synchronous = true;
 		model = view.proxy(rawModel);
@@ -84,7 +84,7 @@ describe('Satori', function () {
 
 		it('should bind event handler', function () {
 			let clicked = false;
-			let header = view.h1({on: {click: () => {clicked = true}}}, () => model.title);
+			const header = view.h1({on: {click: () => {clicked = true}}}, () => model.title);
 			root.appendChild(header);
 			header.click();
 			assert.equal(root.innerHTML, '<h1>First</h1>');
@@ -94,9 +94,9 @@ describe('Satori', function () {
 
 	describe('update', function () {
 		it('should update element text on property change', function () {
-			let header1 = view.h1(() => model.title);
-			let header2 = view.h1(() => model.title);
-			let text = view.div([header2, view.div(() => model.text)]);
+			const header1 = view.h1(() => model.title);
+			const header2 = view.h1(() => model.title);
+			const text = view.div([header2, view.div(() => model.text)]);
 			root.appendChild(header1);
 			root.appendChild(text);
 
@@ -108,7 +108,7 @@ describe('Satori', function () {
 		});
 
 		it('should update element class on property change', function () {
-			let container = view.div({class: {post: true, published: () => model.isPublished}}, [
+			const container = view.div({class: {post: true, published: () => model.isPublished}}, [
 				view.h1(() => model.title),
 			]);
 
@@ -124,8 +124,8 @@ describe('Satori', function () {
 	});
 
 	describe('list', function () {
-		let item = value => view.li(value.title);
-		let itemHtml = value => '<li>' + value.title + '</li>';
+		const item = value => view.li(value.title);
+		const itemHtml = value => '<li>' + value.title + '</li>';
 
 		it('should create elements for array items', function () {
 			root.appendChild(view.ul({list: {array: () => array, item}}));
@@ -133,35 +133,35 @@ describe('Satori', function () {
 		});
 
 		it('should append element on array push', function () {
-			let list = view.ul({list: {array: () => array, item}});
+			const list = view.ul({list: {array: () => array, item}});
 			root.appendChild(list);
 			array.push({title: 'New'});
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should append element on array unshift', function () {
-			let list = view.ul({list: {array: () => array, item}});
+			const list = view.ul({list: {array: () => array, item}});
 			root.appendChild(list);
 			array.unshift({title: 'New'});
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should update array item element on change', function () {
-			let list = view.ul({list: {array: () => array, item}});
+			const list = view.ul({list: {array: () => array, item}});
 			root.appendChild(list);
 			array[1] = {title: 'New'};
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should append element on array push', function () {
-			let list = view.ul(() => model.tags.map(tag => view.li(tag)));
+			const list = view.ul(() => model.tags.map(tag => view.li(tag)));
 			root.appendChild(list);
 			model.tags.push('New');
 			assert.equal(root.innerHTML, '<ul>' + model.tags.map(tag => '<li>' + tag + '</li>').join('') + '</ul>');
 		});
 
 		it('should append element on array unshift', function () {
-			let list = view.ul(() => model.tags.map((tag, i) => view.li(i + ' ' + tag)));
+			const list = view.ul(() => model.tags.map((tag, i) => view.li(i + ' ' + tag)));
 			root.appendChild(list);
 			model.tags.unshift('New');
 			assert.equal(root.innerHTML,
@@ -169,28 +169,28 @@ describe('Satori', function () {
 		});
 
 		it('should update list on reverse', function () {
-			let list = view.ul({list: {array: () => array, item}});
+			const list = view.ul({list: {array: () => array, item}});
 			root.appendChild(list);
 			array.reverse();
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should update list on reassign, same objects', function () {
-			let list = view.ul({list: {array: () => container.array, item}});
+			const list = view.ul({list: {array: () => container.array, item}});
 			root.appendChild(list);
 			container.array = array.slice().reverse();
 			assert.equal(root.innerHTML, '<ul>' + array.slice().reverse().map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should update list on reassign, new objects', function () {
-			let container = view.proxy({array});
-			let list = view.ul({list: {array: () => container.array, item: value => view.li(() => value.title)}});
+			const container = view.proxy({array});
+			const list = view.ul({list: {array: () => container.array, item: value => view.li(() => value.title)}});
 			root.appendChild(list);
-			let oldChildren = [].slice.call(list.children);
-			let newArray = JSON.parse(JSON.stringify(array));
+			const oldChildren = [].slice.call(list.children);
+			const newArray = JSON.parse(JSON.stringify(array));
 			newArray[1].title = 'New Second';
 			newArray.forEach((value, i) => Object.assign(array[i], value));
-			let newChildren = [].slice.call(list.children);
+			const newChildren = [].slice.call(list.children);
 			assert.equal(root.innerHTML, '<ul>' + newArray.map(itemHtml).join('') + '</ul>');
 			assert.deepEqual(newChildren, oldChildren);
 		});
@@ -214,9 +214,9 @@ describe('Satori', function () {
 		});
 
 		it('should undo array push', function () {
-			let before = array.slice();
+			const before = array.slice();
 			undo.action(() => array.push({title: 'New'}));
-			let after = array.slice();
+			const after = array.slice();
 			assert.notDeepEqual(array, before);
 			undo.undo();
 			assert.deepEqual(array, before);

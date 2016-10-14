@@ -27,22 +27,21 @@ These qualities also make it useful for quick prototyping — it won’t interf
 Hello, World:
 
 ```javascript
-let view = new Satori();
-let HelloComponent = name => view.div(['Hello, ', name]);
+const view = new Satori();
+const HelloComponent = name => view.div(['Hello, ', name]);
 view.qs('body').appendChild(HelloComponent('World'));
 ```
 
 But this is just a static element. To make something reactive, first make sure that the root object of your model is wrapped in a proxy:
 
 ```javascript
-let user = view.proxy({name: 'Mike'});
+const user = view.proxy({name: 'Mike'});
 ```
 
 Then just wrap the reactive part in a function:
 
 ```javascript
-let HelloComponent = user => view.div(['Hello, ', view.span(() => user.name)]);
-// >>>                                                      ^^^^^^
+const HelloComponent = user => view.div(['Hello, ', view.span(() => user.name)]);
 view.qs('body').appendChild(HelloComponent(user));
 // The content of the <span> will be updated automatically
 setTimeout(() => {user.name = 'Joe'}, 1000);
@@ -171,7 +170,7 @@ view.div({class: {active: () => user.active}})
 ```
 
 ```javascript
-input({attr: {type: 'checkbox'}})
+view.input({attr: {type: 'checkbox'}})
 ```
 
 #### Element properties: `prop`
@@ -229,7 +228,7 @@ For capturing handlers use `onCapture` modifier instead of `on`:
 ```
 
 ```javascript
-input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}, [view.Key.ESCAPE]: () => {alert('Esc')}}})
+view.input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}, [view.Key.ESCAPE]: () => {alert('Esc')}}})
 ```
 
 #### Two-way data binding: `bind`
@@ -241,7 +240,7 @@ The value of the `to` element property gets assigned to the `model[key]` on ever
 ```
 
 ```javascript
-view.input({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
+view.view.input({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
 ```
 
 ## Examples

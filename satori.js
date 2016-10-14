@@ -14,7 +14,7 @@ class Satori {
 		this.logFlushes = false;
 		this.logEvents = false;
 		this.synchronous = false;
-		let tagFactories = this.createTagFactories(this.constructor.TAGS);
+		const tagFactories = this.createTagFactories(this.constructor.TAGS);
 		Object.assign(this, tagFactories);
 		this.html = tagFactories;
 		this.Key = this.constructor.Key;
@@ -22,7 +22,11 @@ class Satori {
 
 	createTagFactories(tags, obj) {
 		obj = obj || {};
-		tags.forEach(tag => {obj[tag] = (modifiers, content) => this.create(tag, modifiers, content)});
+
+		tags.forEach(tag => {
+			obj[tag] = (modifiers, content) => this.create(tag, modifiers, content);
+		});
+
 		return obj;
 	}
 
@@ -127,13 +131,19 @@ class Satori {
 		to = to || (el.getAttribute('type') === 'checkbox' || mods.attr && mods.attr.type === 'checkbox' ? 'checked' : 'value');
 		on = on ? (on instanceof Array ? on : [on]) : ['change'];
 		this.prop(el, {[to]: () => model[key]}, 'bind');
-		let update = () => {model[key] = el[to]};
-		on.forEach(eventType => this.on(el, {[eventType]: handler ? event => handler(update, event) : update}));
+
+		function update() {
+			model[key] = el[to];
+		}
+
+		on.forEach(eventType => {
+			this.on(el, {[eventType]: handler ? event => handler(update, event) : update});
+		});
 	}
 
 	on(element, eventHandlers, useCapture) {
 		for (let eventType in eventHandlers) {
-			let handler = eventHandlers[eventType];
+			const handler = eventHandlers[eventType];
 
 			if (handler) {
 				element.addEventListener(eventType, handler, useCapture);
@@ -158,13 +168,15 @@ class Satori {
 	onKeyEvent(element, keyHandlers, eventType) {
 		return this.on(element, {
 			[eventType](event) {
-				let handler = keyHandlers[event.keyCode];
+				const handler = keyHandlers[event.keyCode];
 
-				if (handler) {
-					if (handler(element, event) === false) {
-						event.preventDefault();
-						event.stopPropagation();
-					}
+				if (!handler) {
+					return;
+				}
+
+				if (handler(element, event) === false) {
+					event.preventDefault();
+					event.stopPropagation();
 				}
 			}
 		});
@@ -185,7 +197,7 @@ class Satori {
 
 	createMultikeyModifier(name, element, data, apply) {
 		Object.keys(data).forEach(key => {
-			let value = data[key];
+			const value = data[key];
 
 			if (typeof value !== 'function') {
 				apply(element, key, value);
@@ -201,7 +213,7 @@ class Satori {
 	}
 
 	observer(name, func, element, keepChildren) {
-		let observer = new SatoriObserver(func, this.currentObserver, name, element, keepChildren);
+		const observer = new SatoriObserver(func, this.currentObserver, name, element, keepChildren);
 		this.runObserver(observer);
 		return observer;
 	}
@@ -266,7 +278,7 @@ class Satori {
 	}
 
 	registerDependency(observers) {
-		let observer = this.currentObserver;
+		const observer = this.currentObserver;
 
 		if (!observer) {
 			return;
@@ -340,10 +352,10 @@ class Satori {
 	}
 
 	proxyObject(obj) {
-		let that = this;
+		const that = this;
 		let proxy;
 
-		let proxyInternals = obj[this.symProxyInternals] = {
+		const proxyInternals = obj[this.symProxyInternals] = {
 			propObservers: new Map(),
 			keysObservers: new Set(),
 
@@ -363,21 +375,21 @@ class Satori {
 				}
 
 				that.registerDependency(observers);
-				let descriptor = getPropertyDescriptor(target, prop);
+				const descriptor = getPropertyDescriptor(target, prop);
 				return that.proxy(descriptor && descriptor.get ? descriptor.get.call(proxy) : target[prop]);
 			},
 
 			set(target, prop, value, proxy) {
-				let raw = that.unproxy(value);
-				let descriptor = getPropertyDescriptor(target, prop);
-				let hasSetter = descriptor && descriptor.set;
+				const raw = that.unproxy(value);
+				const descriptor = getPropertyDescriptor(target, prop);
+				const hasSetter = descriptor && descriptor.set;
 
 				if (!hasSetter && raw === target[prop]) {
 					return true;
 				}
 
-				let existed = target.hasOwnProperty(prop);
-				let old = target[prop];
+				const existed = target.hasOwnProperty(prop);
+				const old = target[prop];
 
 				if (hasSetter) {
 					descriptor.set.call(proxy, raw);
@@ -400,9 +412,9 @@ class Satori {
 			},
 
 			deleteProperty(target, prop) {
-				let existed = prop in target;
-				let old = target[prop];
-				let result = delete target[prop];
+				const existed = prop in target;
+				const old = target[prop];
+				const result = delete target[prop];
 
 				if (existed) {
 					that.event(this.keysObservers, {proxy, prop, deleteProperty: prop}, true);
@@ -434,9 +446,9 @@ class Satori {
 	}
 
 	proxyArray(obj) {
-		let that = this;
+		const that = this;
 
-		let proxyInternals = obj[this.symProxyInternals] = {
+		const proxyInternals = obj[this.symProxyInternals] = {
 			observers: new Set(),
 
 			event(event) {
@@ -466,8 +478,8 @@ class Satori {
 					case 'sort':
 						return (...args) => {
 							that.registerDependency(this.observers);
-							let old = target.slice();
-							let result = target[prop].call(target, ...args);
+							const old = target.slice();
+							const result = target[prop].call(target, ...args);
 							this.event({proxy, prop, method: prop, old, args});
 							return result;
 						};
@@ -480,8 +492,8 @@ class Satori {
 					case 'push':
 					case 'unshift':
 						return (...values) => {
-							let raw = that.unproxyAll(values);
-							let result = target[prop].call(target, ...raw);
+							const raw = that.unproxyAll(values);
+							const result = target[prop].call(target, ...raw);
 							this.event({proxy, prop, method: prop, values: raw});
 							return result;
 						};
@@ -489,7 +501,7 @@ class Satori {
 					case 'shift':
 						return () => {
 							that.registerDependency(this.observers);
-							let value = target[prop].call(target);
+							const value = target[prop].call(target);
 							this.event({proxy, method: prop, prop, value});
 							return that.proxy(value);
 						};
@@ -499,8 +511,8 @@ class Satori {
 							count = count != null ? count : target.length - start;
 							start = Math.min(Math.max(start, 0), target.length);
 							count = Math.min(count, target.length - start);
-							let raw = that.unproxyAll(insert);
-							let removed = that.proxy(target.splice(start, count, ...raw));
+							const raw = that.unproxyAll(insert);
+							const removed = that.proxy(target.splice(start, count, ...raw));
 							this.event({proxy, prop, method: prop, start, count, insert: raw, removed});
 							return removed;
 						};
@@ -511,13 +523,13 @@ class Satori {
 			},
 
 			set(target, prop, value, proxy) {
-				let raw = that.unproxy(value);
+				const raw = that.unproxy(value);
 
 				if (raw === target[prop]) {
 					return true;
 				}
 
-				let old = target[prop];
+				const old = target[prop];
 				target[prop] = raw;
 				this.event({proxy, prop, value: raw, old});
 				return true;
@@ -558,7 +570,7 @@ class Satori {
 			},
 		};
 
-		let proxy = new Proxy(obj, proxyInternals);
+		const proxy = new Proxy(obj, proxyInternals);
 		proxyInternals.observers.owner = proxy;
 		return proxy;
 	}
@@ -572,11 +584,11 @@ class Satori {
 	}
 
 	list(element, {array, item: itemFactory}) {
-		let items = new Map();
+		const items = new Map();
 
 		this.observer('list', () => {
-			let currentArray = array() || [];
-			let values = new Set(currentArray);
+			const currentArray = array() || [];
+			const values = new Set(currentArray);
 
 			if (values.size !== currentArray.length) {
 				throw new Error('Duplicate values are not allowed in lists');
@@ -591,10 +603,10 @@ class Satori {
 			});
 
 			currentArray.forEach((proxy, i) => {
-				let item = items.get(proxy);
+				const item = items.get(proxy);
 
 				if (item) {
-					let actualElement = element.children[i];
+					const actualElement = element.children[i];
 
 					if (!actualElement) {
 						element.appendChild(item.element);
@@ -606,7 +618,7 @@ class Satori {
 				}
 
 				this.observer('list.item', observer => {
-					let itemElement = itemFactory(proxy);
+					const itemElement = itemFactory(proxy);
 					this.onElementUpdate.forEach(handler => handler(itemElement, element));
 					items.set(proxy, {element: itemElement, observer});
 
@@ -626,8 +638,8 @@ class Satori {
 		if (content instanceof Array) {
 			element.innerHTML = '';
 
-			for (let i = 0, len = content.length; i < len; ++i) {
-				let child = content[i];
+			for (let i = 0; i < content.length; ++i) {
+				const child = content[i];
 
 				if (child == null) {
 					continue;

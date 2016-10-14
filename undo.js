@@ -30,7 +30,7 @@ class SatoriUndo {
 			this.begin();
 		}
 
-		let result = func();
+		const result = func();
 
 		if (close) {
 			this.currentAction.closed = true;
@@ -128,7 +128,7 @@ class SatoriUndo {
 			return false;
 		}
 
-		let action = this.redoHistory.pop();
+		const action = this.redoHistory.pop();
 		this.freeze++;
 
 		for (let i = 0, len = action.events.length; i < len; ++i) {
