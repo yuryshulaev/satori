@@ -31,20 +31,11 @@ class Satori {
 	}
 
 	create(tag, modifiers, content) {
-		if (modifiers === null || typeof modifiers !== 'object' || modifiers.constructor !== Object) {
-			if (content) {
-				throw new Error('Invalid arguments');
-			}
-
-			content = modifiers;
-			modifiers = {};
-		}
-
 		return this.assign(document.createElement(tag), content != null ? Object.assign({content}, modifiers) : modifiers);
 	}
 
 	assign(element, modifiers) {
-		for (var modifier in modifiers) {
+		for (let modifier in modifiers) {
 			if (!this[modifier]) {
 				throw new Error('Unknown modifier: \'' + modifier + '\'. Did you forget \'attr\'?');
 			}

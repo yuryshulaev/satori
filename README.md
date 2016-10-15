@@ -6,7 +6,7 @@ Key features:
 
  * Unobtrusive — you can keep your model intact. In contrast to non-Proxy solutions, even property additions do not need any special treatment
  * Pure JavaScript [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) makes code reuse more straightforward
- * Expressive — [TodoMVC is only 75 SLOC](https://github.com/yuryshulaev/satori-todomvc) (including most of the markup)
+ * Expressive — [TodoMVC is only 75 SLOC](#examples) (including most of the markup)
  * It doesn’t dictate you anything — it’s not a framework
  * Tiny — core library is ~700 SLOC, 5 KB gzipped
  * Server-side rendering
@@ -28,7 +28,7 @@ Hello, World:
 
 ```javascript
 const view = new Satori();
-const HelloComponent = name => view.div(['Hello, ', name]);
+const HelloComponent = name => view.div({}, ['Hello, ', name]);
 view.qs('body').appendChild(HelloComponent('World'));
 ```
 
@@ -41,7 +41,7 @@ const user = view.proxy({name: 'Mike'});
 Then just wrap the reactive part in a function:
 
 ```javascript
-const HelloComponent = user => view.div(['Hello, ', view.span(() => user.name)]);
+const HelloComponent = user => view.div({}, ['Hello, ', view.span({}, () => user.name)]);
 view.qs('body').appendChild(HelloComponent(user));
 // The content of the <span> will be updated automatically
 setTimeout(() => {user.name = 'Joe'}, 1000);
@@ -58,19 +58,19 @@ There are multiple ways to specify element content:
 Text:
 
 ```javascript
-view.div('Hello')
+view.div({}, 'Hello')
 ```
 
 One child element:
 
 ```javascript
-view.div(view.div())
+view.div({}, view.div())
 ```
 
 Array of elements and/or strings:
 
 ```javascript
-view.div([view.span(), ' ', view.span()])
+view.div({}, [view.span(), ' ', view.span()])
 ```
 
 This method is called under the hood and supports all of the above:
@@ -117,7 +117,7 @@ Examples:
 
 ```javascript
 view.div({content: 'Text'})
-view.div({content: view.h1('Title')})
+view.div({content: view.h1({}, 'Title')})
 view.div({content: [view.strong(10), ' items']})
 view.div({content: () => page.text})
 ```
@@ -228,7 +228,10 @@ For capturing handlers use `onCapture` modifier instead of `on`:
 ```
 
 ```javascript
-view.input({keydown: {[view.Key.ENTER]: el => {alert(el.value)}, [view.Key.ESCAPE]: () => {alert('Esc')}}})
+view.input({keydown: {
+	[view.Key.ENTER]: el => {alert(el.value)},
+	[view.Key.ESCAPE]: () => {alert('Esc')},
+}})
 ```
 
 #### Two-way data binding: `bind`
@@ -240,12 +243,13 @@ The value of the `to` element property gets assigned to the `model[key]` on ever
 ```
 
 ```javascript
-view.view.input({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
+view.input({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
 ```
 
 ## Examples
 
-* [TodoMVC](https://github.com/yuryshulaev/satori-todomvc)
+* [Component TodoMVC](https://github.com/yuryshulaev/satori-component-todomvc)
+* [MVVM TodoMVC](https://github.com/yuryshulaev/satori-todomvc) (75 SLOC)
 
 ## Performance
 
