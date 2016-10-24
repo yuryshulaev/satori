@@ -20,7 +20,7 @@ class SatoriComponent {
 	}
 
 	mount(container) {
-		this.view.content(container, this.render());
+		this.view.content(container, this);
 		return this;
 	}
 

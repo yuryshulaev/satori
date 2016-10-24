@@ -4,6 +4,7 @@ const assert = chai.assert;
 
 describe('Satori', function () {
 	let view;
+	let h;
 	let model;
 	let array;
 	let container;
@@ -33,6 +34,7 @@ describe('Satori', function () {
 
 		const rawArray = [rawModel, {id: 1, title: 'Second', text: 'Content'}, {id: 2, title: 'Third', text: 'Content'}];
 		view = new Satori(window);
+		h = view.h;
 		view.synchronous = true;
 		model = view.proxy(rawModel);
 		array = view.proxy(rawArray);
@@ -43,48 +45,48 @@ describe('Satori', function () {
 
 	describe('create', function () {
 		it('should create element with text', function () {
-			root.appendChild(view.h1({}, model.title));
+			root.appendChild(h('h1', null, model.title));
 			assert.equal(root.innerHTML, '<h1>First</h1>');
 		});
 
 		it('should create element with children', function () {
-			root.appendChild(view.h1({}, [view.span({}, model.title), view.span({}, 'Test')]));
+			root.appendChild(h('h1', null, [h('span', null, model.title), h('span', null, 'Test')]));
 			assert.equal(root.innerHTML, '<h1><span>First</span><span>Test</span></h1>');
 		});
 
 		it('should create element with class', function () {
-			root.appendChild(view.h1({class: 'header'}, model.title));
+			root.appendChild(h('h1', {class: 'header'}, model.title));
 			assert.equal(root.innerHTML, '<h1 class="header">First</h1>');
 		});
 
 		it('should create element with class using object, true', function () {
-			root.appendChild(view.h1({class: {header: true}}, model.title));
+			root.appendChild(h('h1', {class: {header: true}}, model.title));
 			assert.equal(root.innerHTML, '<h1 class="header">First</h1>');
 		});
 
 		it('should create element with class using object, false', function () {
-			root.appendChild(view.h1({class: {title: true, header: false}}, model.title));
+			root.appendChild(h('h1', {class: {title: true, header: false}}, model.title));
 			assert.equal(root.innerHTML, '<h1 class="title">First</h1>');
 		});
 
 		it('should create element with attribute', function () {
-			root.appendChild(view.h1({attr: {id: 'header'}}, model.title));
+			root.appendChild(h('h1', {attr: {id: 'header'}}, model.title));
 			assert.equal(root.innerHTML, '<h1 id="header">First</h1>');
 		});
 
 		it('should create element with data', function () {
-			root.appendChild(view.h1({data: {a: 123}}, model.title));
+			root.appendChild(h('h1', {data: {a: 123}}, model.title));
 			assert.equal(root.innerHTML, '<h1 data-a="123">First</h1>');
 		});
 
 		it('should create element with CSS', function () {
-			root.appendChild(view.h1({css: {color: 'blue'}}, model.title));
+			root.appendChild(h('h1', {css: {color: 'blue'}}, model.title));
 			assert.equal(root.innerHTML, '<h1 style="color: blue;">First</h1>');
 		});
 
 		it('should bind event handler', function () {
 			let clicked = false;
-			const header = view.h1({on: {click: () => {clicked = true}}}, () => model.title);
+			const header = h('h1', {on: {click: () => {clicked = true}}}, () => model.title);
 			root.appendChild(header);
 			header.click();
 			assert.equal(root.innerHTML, '<h1>First</h1>');
@@ -94,9 +96,9 @@ describe('Satori', function () {
 
 	describe('update', function () {
 		it('should update element text on property change', function () {
-			const header1 = view.h1({}, () => model.title);
-			const header2 = view.h1({}, () => model.title);
-			const text = view.div({}, [header2, view.div({}, () => model.text)]);
+			const header1 = h('h1', null, () => model.title);
+			const header2 = h('h1', null, () => model.title);
+			const text = h('div', null, [header2, h('div', null, () => model.text)]);
 			root.appendChild(header1);
 			root.appendChild(text);
 
@@ -108,8 +110,8 @@ describe('Satori', function () {
 		});
 
 		it('should update element class on property change', function () {
-			const container = view.div({class: {post: true, published: () => model.isPublished}}, [
-				view.h1({}, () => model.title),
+			const container = h('div', {class: {post: true, published: () => model.isPublished}}, [
+				h('h1', null, () => model.title),
 			]);
 
 			root.appendChild(container);
@@ -124,44 +126,44 @@ describe('Satori', function () {
 	});
 
 	describe('list', function () {
-		const item = value => view.li({}, value.title);
+		const item = value => h('li', null, value.title);
 		const itemHtml = value => '<li>' + value.title + '</li>';
 
 		it('should create elements for array items', function () {
-			root.appendChild(view.ul({list: {array: () => array, item}}));
+			root.appendChild(h('ul', {list: {array: () => array, item}}));
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should append element on array push', function () {
-			const list = view.ul({list: {array: () => array, item}});
+			const list = h('ul', {list: {array: () => array, item}});
 			root.appendChild(list);
 			array.push({title: 'New'});
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should append element on array unshift', function () {
-			const list = view.ul({list: {array: () => array, item}});
+			const list = h('ul', {list: {array: () => array, item}});
 			root.appendChild(list);
 			array.unshift({title: 'New'});
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should update array item element on change', function () {
-			const list = view.ul({list: {array: () => array, item}});
+			const list = h('ul', {list: {array: () => array, item}});
 			root.appendChild(list);
 			array[1] = {title: 'New'};
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should append element on array push', function () {
-			const list = view.ul({}, () => model.tags.map(tag => view.li({}, tag)));
+			const list = h('ul', null, () => model.tags.map(tag => h('li', null, tag)));
 			root.appendChild(list);
 			model.tags.push('New');
 			assert.equal(root.innerHTML, '<ul>' + model.tags.map(tag => '<li>' + tag + '</li>').join('') + '</ul>');
 		});
 
 		it('should append element on array unshift', function () {
-			const list = view.ul({}, () => model.tags.map((tag, i) => view.li({}, i + ' ' + tag)));
+			const list = h('ul', null, () => model.tags.map((tag, i) => h('li', null, i + ' ' + tag)));
 			root.appendChild(list);
 			model.tags.unshift('New');
 			assert.equal(root.innerHTML,
@@ -169,14 +171,14 @@ describe('Satori', function () {
 		});
 
 		it('should update list on reverse', function () {
-			const list = view.ul({list: {array: () => array, item}});
+			const list = h('ul', {list: {array: () => array, item}});
 			root.appendChild(list);
 			array.reverse();
 			assert.equal(root.innerHTML, '<ul>' + array.map(itemHtml).join('') + '</ul>');
 		});
 
 		it('should update list on reassign, same objects', function () {
-			const list = view.ul({list: {array: () => container.array, item}});
+			const list = h('ul', {list: {array: () => container.array, item}});
 			root.appendChild(list);
 			container.array = array.slice().reverse();
 			assert.equal(root.innerHTML, '<ul>' + array.slice().reverse().map(itemHtml).join('') + '</ul>');
@@ -184,7 +186,7 @@ describe('Satori', function () {
 
 		it('should update list on reassign, new objects', function () {
 			const container = view.proxy({array});
-			const list = view.ul({list: {array: () => container.array, item: value => view.li({}, () => value.title)}});
+			const list = h('ul', {list: {array: () => container.array, item: value => h('li', null, () => value.title)}});
 			root.appendChild(list);
 			const oldChildren = [].slice.call(list.children);
 			const newArray = JSON.parse(JSON.stringify(array));

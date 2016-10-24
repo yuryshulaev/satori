@@ -14,20 +14,8 @@ class Satori {
 		this.logFlushes = false;
 		this.logEvents = false;
 		this.synchronous = false;
-		const tagFactories = this.createTagFactories(this.constructor.TAGS);
-		Object.assign(this, tagFactories);
-		this.html = tagFactories;
 		this.Key = this.constructor.Key;
-	}
-
-	createTagFactories(tags, obj) {
-		obj = obj || {};
-
-		tags.forEach(tag => {
-			obj[tag] = (modifiers, content) => this.create(tag, modifiers, content);
-		});
-
-		return obj;
+		this.h = (...args) => this.create(...args);
 	}
 
 	create(tag, modifiers, content) {
@@ -35,6 +23,10 @@ class Satori {
 	}
 
 	assign(element, modifiers) {
+		if (!modifiers) {
+			return element;
+		}
+
 		for (let modifier in modifiers) {
 			if (!this[modifier]) {
 				throw new Error('Unknown modifier: \'' + modifier + '\'. Did you forget \'attr\'?');
@@ -47,11 +39,15 @@ class Satori {
 	}
 
 	content(element, content) {
-		return this.createModifier('content', element, content, this.setElementContent);
+		return this.createModifier('content', element, content, (element, content) => {
+			this.setElementContent(element, content);
+		});
 	}
 
 	text(element, text) {
-		return this.createModifier('text', element, text, (element, text) => element.textContent = text);
+		return this.createModifier('text', element, text, (element, text) => {
+			element.textContent = text;
+		});
 	}
 
 	show(element, show) {
@@ -609,7 +605,7 @@ class Satori {
 				}
 
 				this.observer('list.item', observer => {
-					const itemElement = itemFactory(proxy);
+					const itemElement = this.render(itemFactory(proxy));
 					this.onElementUpdate.forEach(handler => handler(itemElement, element));
 					items.set(proxy, {element: itemElement, observer});
 
@@ -626,9 +622,9 @@ class Satori {
 	}
 
 	setElementContent(element, content) {
-		if (content instanceof Array) {
-			element.innerHTML = '';
+		element.innerHTML = '';
 
+		if (content instanceof Array) {
 			for (let i = 0; i < content.length; ++i) {
 				const child = content[i];
 
@@ -636,16 +632,22 @@ class Satori {
 					continue;
 				}
 
-				element.appendChild(child instanceof Node ? child : document.createTextNode(child));
+				element.appendChild(
+					child instanceof Node
+						? child
+						: child && child.render ? this.render(child) : document.createTextNode(child));
 			}
 		} else if (content instanceof HTMLElement) {
-			element.innerHTML = '';
 			element.appendChild(content);
+		} else if (content && content.render) {
+			element.appendChild(this.render(content));
 		} else if (content != null) {
 			element.textContent = content;
-		} else if (content == null) {
-			element.innerHTML = '';
 		}
+	}
+
+	render(node) {
+		return node.render ? node.render(node.view && node.view.h) : node;
 	}
 
 	get highlightUpdates() {
@@ -748,13 +750,6 @@ class Satori {
 		return 'rgb(' + new Array(3).fill().map(() => Math.round(127 + Math.random() * 128)).join(', ') + ')';
 	}
 }
-
-Satori.TAGS = [
-	'html', 'head', 'body', 'meta', 'title', 'link', 'script', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-	'ul', 'ol', 'li', 'strong', 'em', 'a', 'p', 'br', 'section', 'header', 'footer', 'nav', 'article', 'img',
-	'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'hr', 'form', 'fieldset', 'button', 'input', 'label', 'select', 'option',
-	'textarea', 'blockquote', 'pre', 'code', 'sub', 'sup', 'abbr', 'audio', 'video', 'canvas', 'dl', 'dd', 'dt', 'kbd',
-];
 
 Satori.Key = {
 	ALT: 18, BACKSPACE: 8, COMMA: 188, CONTROL: 17, DELETE: 46, DOWN: 40, END: 35, ENTER: 13, ESCAPE: 27,

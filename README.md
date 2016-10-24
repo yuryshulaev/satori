@@ -28,8 +28,9 @@ Hello, World:
 
 ```javascript
 const view = new Satori();
-const HelloComponent = name => view.div({}, ['Hello, ', name]);
-view.qs('body').appendChild(HelloComponent('World'));
+const h = view.h;
+const HelloView = name => h('div', null, ['Hello, ', name]);
+view.qs('body').appendChild(HelloView('World'));
 ```
 
 But this is just a static element. To make something reactive, first make sure that the root object of your model is wrapped in a proxy:
@@ -41,8 +42,8 @@ const user = view.proxy({name: 'Mike'});
 Then just wrap the reactive part in a function:
 
 ```javascript
-const HelloComponent = user => view.div({}, ['Hello, ', view.span({}, () => user.name)]);
-view.qs('body').appendChild(HelloComponent(user));
+const HelloView = user => h('div', null, ['Hello, ', h('span', null, () => user.name)]);
+view.qs('body').appendChild(HelloView(user));
 // The content of the <span> will be updated automatically
 setTimeout(() => {user.name = 'Joe'}, 1000);
 ```
@@ -51,29 +52,37 @@ Reactivity is based primarily on registering property accesses via proxies, so t
 
 ## Documentation
 
+### Element factory
+
+DOM elements are created using the element factory method:
+
+```javascript
+h(tagName, modifiers, content): Element
+```
+
 ### Element content
 
-There are multiple ways to specify element content:
+There are multiple ways to specify the element content:
 
-Text:
+ * Text:
 
-```javascript
-view.div({}, 'Hello')
-```
+ ```javascript
+ h('div', null, 'Hello')
+ ```
 
-One child element:
+ * One child element:
 
-```javascript
-view.div({}, view.div())
-```
+ ```javascript
+ h('div', null, h('div'))
+ ```
 
-Array of elements and/or strings:
+ * Array of elements and/or strings:
 
-```javascript
-view.div({}, [view.span(), ' ', view.span()])
-```
+ ```javascript
+ h('div', null, [h('span'), ' ', h('span')])
+ ```
 
-This method is called under the hood and supports all of the above:
+The `view.setElementContent()` method is called under the hood and supports all of the above:
 
 ```javascript
 view.setElementContent(element, content)
@@ -81,10 +90,10 @@ view.setElementContent(element, content)
 
 ### Modifiers
 
-Element modifiers are passed as the first argument to an element factory function:
+Element modifiers are passed as the second argument to the element factory:
 
 ```javascript
-view.div({…}, content)
+h('div', {…}, content)
 ```
 
 Modifiers are view object methods and can also be applied to any existing DOM elements:
@@ -99,7 +108,7 @@ You also can use `assign()` method to apply multiple modifiers at once to an exi
 ```javascript
 view.assign(view.qs('.clear-completed'), {
     show: () => model.completed.length,
-    on: {click: e => {model.clearCompleted()}},
+    on: {click: () => {model.clearCompleted()}},
 });
 ```
 
@@ -107,7 +116,7 @@ All available modifiers are listed below.
 
 #### Content: `content`
 
-Content passed to an element factory is handled as `content` modifier internally.
+Content passed to the element factory is handled as `content` modifier internally.
 
 ```javascript
 {content: string|Node|[string|Node] | () => string|Node|[string|Node]}
@@ -116,10 +125,10 @@ Content passed to an element factory is handled as `content` modifier internally
 Examples:
 
 ```javascript
-view.div({content: 'Text'})
-view.div({content: view.h1({}, 'Title')})
-view.div({content: [view.strong(10), ' items']})
-view.div({content: () => page.text})
+h('div', {content: 'Text'})
+h('div', {content: h('h1', null, 'Title')})
+h('div', {content: [h('strong', null, 10), ' items']})
+h('div', {content: () => page.text})
 ```
 
 #### Visibility: `show`
@@ -131,8 +140,8 @@ Adds `display: none` style property when the value is false and removes it, when
 ```
 
 ```javascript
-view.div({show: false}, 'Text')
-view.div({show: () => items.length}, 'Text')
+h('div', {show: false}, 'Text')
+h('div', {show: () => items.length}, 'Text')
 ```
 
 #### CSS classes: `class`
@@ -146,21 +155,21 @@ Presence of CSS classes is specified using booleans:
 Single static class:
 
 ```javascript
-view.div({class: 'active'})
+h('div', {class: 'active'})
 ```
 
 Static:
 
 ```javascript
-view.div({class: ['active']})
-view.div({class: {active: true}})
-view.div({class: {active: user.active}})
+h('div', {class: ['active']})
+h('div', {class: {active: true}})
+h('div', {class: {active: user.active}})
 ```
 
 Reactive:
 
 ```javascript
-view.div({class: {active: () => user.active}})
+h('div', {class: {active: () => user.active}})
 ```
 
 #### Attributes: `attr`
@@ -170,7 +179,7 @@ view.div({class: {active: () => user.active}})
 ```
 
 ```javascript
-view.input({attr: {type: 'checkbox'}})
+h('input', {attr: {type: 'checkbox'}})
 ```
 
 #### Element properties: `prop`
@@ -197,7 +206,7 @@ view.input({attr: {type: 'checkbox'}})
 ```
 
 ```javascript
-view.div({css: {'background-color': 'blue'}})
+h('div', {css: {'background-color': 'blue'}})
 ```
 
 #### Event handlers: `on`
@@ -209,7 +218,7 @@ Simply calls `addEventHandler()` for each key.
 ```
 
 ```javascript
-view.div({on: {click() {alert('Click!')}}})
+h('div', {on: {click() {alert('Click!')}}})
 ```
 
 #### Capturing event handlers: `onCapture`
@@ -228,7 +237,7 @@ For capturing handlers use `onCapture` modifier instead of `on`:
 ```
 
 ```javascript
-view.input({keydown: {
+h('input', {keydown: {
 	[view.Key.ENTER]: el => {alert(el.value)},
 	[view.Key.ESCAPE]: () => {alert('Esc')},
 }})
@@ -243,7 +252,7 @@ The value of the `to` element property gets assigned to the `model[key]` on ever
 ```
 
 ```javascript
-view.input({bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
+h('input', {bind: {model: proxy, key: 'title', to: 'value', on: ['keydown', 'keyup']}})
 ```
 
 ## Examples
