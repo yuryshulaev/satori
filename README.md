@@ -1,6 +1,6 @@
 # Satori
 
-Satori is a minimalistic JavaScript reactive view library. It uses [ES6 Proxies](https://developers.google.com/web/updates/2016/02/es2015-proxies) for data binding, and because [they are not yet ubiquitous](http://caniuse.com/#feat=proxy), *for now* it is mainly useful for [nw.js](http://nwjs.io/) and [Electron](http://electron.atom.io/) applications.
+Satori is a minimalistic JavaScript reactive view library that uses [ES6 Proxies](https://developers.google.com/web/updates/2016/02/es2015-proxies) for data binding ([browser support](http://caniuse.com/#feat=proxy)).
 
 Key features:
 
