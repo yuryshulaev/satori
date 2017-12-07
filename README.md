@@ -18,15 +18,17 @@ These qualities also make it useful for quick prototyping — it won’t interf
 
 ## Getting started
 
-[Download](https://raw.githubusercontent.com/yuryshulaev/satori/master/satori.js) and include the library:
+Install the library:
 
 ```html
-<script src="satori.js"></script>
+npm i satorijs
 ```
 
 Hello, World:
 
 ```javascript
+import {Satori} from 'satorijs';
+
 const view = new Satori();
 const h = view.h;
 const HelloView = name => h('div', null, ['Hello, ', name]);
