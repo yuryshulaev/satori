@@ -55,3 +55,7 @@ class SatoriComponent {
 		return result;
 	}
 }
+
+if (typeof module !== 'undefined') {
+	module.exports = SatoriComponent;
+}

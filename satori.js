@@ -810,3 +810,7 @@ class SatoriObserver {
 		this.children.clear();
 	}
 }
+
+if (typeof module !== 'undefined') {
+	module.exports = Satori;
+}

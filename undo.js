@@ -144,3 +144,7 @@ class SatoriUndo {
 		return true;
 	}
 }
+
+if (typeof module !== 'undefined') {
+	module.exports = SatoriUndo;
+}
